@@ -6,7 +6,7 @@ export function App() {
   return (
     <main>
       <Dashboard />
-      <Analytics />
+      <Analytics mode="production" />
     </main>
   );
 }
