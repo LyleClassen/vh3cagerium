@@ -212,6 +212,56 @@ h1 {
     inset 0 0 4px rgba(242, 162, 65, 0.05);
 }
 
+/* ── Sorting Controls ── */
+.sort-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: -0.5rem;
+}
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-ornate);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.sort-button:hover {
+  background: var(--bg-panel-hover);
+  border-color: var(--accent-gold-dim);
+  color: var(--text-primary);
+}
+
+.sort-button.active {
+  border-color: var(--accent-gold);
+  background: rgba(242, 162, 65, 0.08);
+  color: var(--accent-gold);
+  box-shadow: 0 0 15px rgba(242, 162, 65, 0.1);
+}
+
+.control-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.control-icon.active {
+  color: var(--accent-gold);
+  filter: drop-shadow(0 0 4px rgba(242, 162, 65, 0.4));
+}
+
 /* ── Tabs ── */
 .tabs {
   display: flex;

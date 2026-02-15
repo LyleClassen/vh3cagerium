@@ -39,6 +39,24 @@ const DiamondIcon = () => (
     </svg>
 );
 
+const SortIcon = ({ order }: { order: 'asc' | 'desc' | 'none' }) => {
+    if (order === 'none') return (
+        <svg className="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m15 9-3-3-3 3" /><path d="m9 15 3 3 3-3" />
+        </svg>
+    );
+    if (order === 'desc') return (
+        <svg className="control-icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m7 10 5 5 5-5" /><path d="M12 15V3" />
+        </svg>
+    );
+    return (
+        <svg className="control-icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m17 14-5-5-5 5" /><path d="M12 9v12" />
+        </svg>
+    );
+};
+
 const tabConfig = [
     { key: 'Mob Cage' as const, icon: <SkullIcon />, label: 'Mob Cage' },
     { key: 'Terrarium' as const, icon: <LeafIcon />, label: 'Terrarium' },
@@ -48,16 +66,40 @@ const tabConfig = [
 export const Dashboard: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeTab, setActiveTab] = useState<'Mob Cage' | 'Terrarium' | 'Binding Plate'>('Mob Cage');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
+
+    const handleSortToggle = () => {
+        setSortOrder(prev => {
+            if (prev === 'none') return 'desc';
+            if (prev === 'desc') return 'asc';
+            return 'none';
+        });
+    };
 
     const filteredMobs = useMemo(() => {
-        return mobs.filter(mob => {
+        let result = mobs.filter(mob => {
             const matchesTab = mob.category === activeTab;
             const matchesSearch =
                 mob.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 mob.drops.some(drop => drop.name.toLowerCase().includes(searchTerm.toLowerCase()));
             return matchesTab && matchesSearch;
         });
-    }, [searchTerm, activeTab]);
+
+        if (sortOrder !== 'none') {
+            result = [...result].sort((a, b) => {
+                const probA = a.eggProbability ?? -1;
+                const probB = b.eggProbability ?? -1;
+
+                if (sortOrder === 'desc') {
+                    return probB - probA;
+                } else {
+                    return probA - probB;
+                }
+            });
+        }
+
+        return result;
+    }, [searchTerm, activeTab, sortOrder]);
 
     return (
         <div className="container">
@@ -80,6 +122,17 @@ export const Dashboard: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         aria-label="Search mobs and drops"
                     />
+                </div>
+
+                <div className="sort-wrapper">
+                    <button
+                        className={`sort-button ${sortOrder !== 'none' ? 'active' : ''}`}
+                        onClick={handleSortToggle}
+                        title={`Sort by Egg Percentage: ${sortOrder === 'none' ? 'Default' : sortOrder === 'desc' ? 'Highest to Lowest' : 'Lowest to Highest'}`}
+                    >
+                        <SortIcon order={sortOrder} />
+                        <span>Egg %</span>
+                    </button>
                 </div>
 
                 <div className="tabs">
