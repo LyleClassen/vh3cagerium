@@ -386,6 +386,48 @@ h1 {
   line-height: 1.2;
 }
 
+/* ── Drops Section (Right Side Container) ── */
+.mob-drops-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+/* ── Egg Probability Badge ── */
+.egg-probability-badge {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-ornate);
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  flex-direction: row;
+  /* Changed to horizontal to fit better above list */
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeIn 0.5s ease-out;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.egg-type {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.egg-percent {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 0 0 10px rgba(242, 162, 65, 0.4);
+}
+
 /* ── Divider ── */
 .mob-divider {
   width: 1px;
@@ -393,15 +435,12 @@ h1 {
   margin: 0.5rem 0;
 }
 
-/* ── Drop List (Right Side) ── */
+/* ── Drop List ── */
 .drop-list {
   list-style: none;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 1rem;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .drop-item {

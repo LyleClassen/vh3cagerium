@@ -63,7 +63,7 @@ export const Dashboard: React.FC = () => {
         <div className="container">
             <header>
                 <h1>Cagerium</h1>
-                <p className="subtitle">Vault Hunters 3.18.2.0 — Loot Database</p>
+                <p className="subtitle">Vault Hunters 3.20.3.0 — Loot Database</p>
                 <div className="ornate-divider">
                     <DiamondIcon />
                 </div>
@@ -114,7 +114,7 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <footer>
-                Cagerium Drop Visualizer — Data for Vault Hunters v3.18.2.0
+                Cagerium Drop Visualizer — Data for Vault Hunters v3.20.3.0
             </footer>
         </div>
     );

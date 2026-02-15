@@ -1,3 +1,6 @@
+import mysteryEggConfig from './configs/mystery_egg.json';
+import mysteryHostileEggConfig from './configs/mystery_hostile_egg.json';
+
 export interface Drop {
     name: string;
     quantity: 'normal' | 'low' | 'high';
@@ -9,6 +12,8 @@ export interface Mob {
     category: 'Mob Cage' | 'Terrarium' | 'Binding Plate';
     drops: Drop[];
     image: string;
+    eggProbability?: number;
+    eggType?: 'Mystery Egg' | 'Hostile Mystery Egg';
 }
 
 export const getMobImage = (name: string) => `https://minecraft.wiki/images/${name}`;
@@ -19,7 +24,39 @@ export const getItemImage = (name: string) => {
     return `https://minecraft.wiki/images/Invicon_${formattedName}.png`;
 };
 
-export const mobs: Mob[] = [
+// Map IDs from config to mob IDs
+const configIdToMobId = (configId: string): string => {
+    const id = configId
+        .replace(/^minecraft:/, '')
+        .replace(/^alexsmobs:spawn_egg_/, '')
+        .replace(/^alexsmobs:/, '')
+        .replace(/^cagerium:/, '')
+        .replace(/_spawn_egg$/, '');
+
+    // Special cases
+    if (id === 'pufferfish') return 'pufferfish_passive';
+    return id;
+};
+
+const calculateWeights = (config: typeof mysteryEggConfig) => {
+    const totalWeight = config.POOL.reduce((acc, item) => acc + item.weight, 0);
+    const weightMap: Record<string, { weight: number, probability: number }> = {};
+
+    config.POOL.forEach(item => {
+        const mobId = configIdToMobId(item.value.id);
+        weightMap[mobId] = {
+            weight: item.weight,
+            probability: (item.weight / totalWeight) * 100
+        };
+    });
+
+    return weightMap;
+};
+
+const mysteryEggWeights = calculateWeights(mysteryEggConfig);
+const hostileEggWeights = calculateWeights(mysteryHostileEggConfig);
+
+const baseMobs: Mob[] = [
     // Mob Cage (Hostile)
     { id: 'evoker', name: 'Evoker', category: 'Mob Cage', drops: [{ name: 'Totem of Undying', quantity: 'normal' }, { name: 'Emerald', quantity: 'normal' }], image: 'https://minecraft.wiki/images/Evoker_Summoning_Vexes.png' },
     { id: 'vindicator', name: 'Vindicator', category: 'Mob Cage', drops: [{ name: 'Emerald', quantity: 'normal' }], image: 'https://minecraft.wiki/images/Vindicator_attacking.png' },
@@ -119,3 +156,23 @@ export const mobs: Mob[] = [
     // Special Mobs
     { id: 'flutter', name: 'Flutter', category: 'Terrarium', drops: [{ name: 'Spore Blossom', quantity: 'normal' }], image: '/mobs/flutter.png' },
 ];
+
+export const mobs: Mob[] = baseMobs.map(mob => {
+    const mysteryWeight = mysteryEggWeights[mob.id];
+    if (mysteryWeight) {
+        return {
+            ...mob,
+            eggProbability: mysteryWeight.probability,
+            eggType: 'Mystery Egg'
+        };
+    }
+    const hostileWeight = hostileEggWeights[mob.id];
+    if (hostileWeight) {
+        return {
+            ...mob,
+            eggProbability: hostileWeight.probability,
+            eggType: 'Hostile Mystery Egg'
+        };
+    }
+    return mob;
+});
