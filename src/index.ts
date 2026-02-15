@@ -34,30 +34,24 @@ serve({
 
     // The root handles the HTML bundle
     "/": index,
+
+    // Catch-all route for SPA routing
+    "/*": index,
   },
 
-  async fetch(req: Request, server: any): Promise<Response> {
+  async fetch(req: Request, server: Server<undefined>): Promise<Response> {
     const url = new URL(req.url);
     const pathName = url.pathname;
 
-    // 1. Try matching routes (API, mobs, and root /)
-    const response = await server.match(req);
-    // If it matched and it's NOT the root (which we want to handle with potential asset matching)
-    // Actually, if it matched a specific route, return it.
-    if (response && pathName !== "/") return response;
-
-    // 2. Check for files in the public directory
+    // 1. Check for files in the public directory
     const publicPath = path.join(process.cwd(), "public", pathName);
     const publicFile = Bun.file(publicPath);
     if (await publicFile.exists()) {
       return new Response(publicFile);
     }
 
-    // 3. Fallback to the index bundle for SPA routing and assets (like /frontend.tsx)
-    // We match the root request against the router to get the index.html bundle's response
-    const indexResponse = await server.match(new Request(new URL("/", req.url)));
-    if (indexResponse) return indexResponse;
-
+    // 2. If we reach here, and it didn't match any route, and it's not a public file,
+    // we return a 404. However, with "/*": index, most requests will be caught by the router.
     return new Response("Not Found", { status: 404 });
   },
 

@@ -5,13 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "bun --hot src/index.ts",
-    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*' && cp -r public/* dist/",
+    "build": "bun build.ts && cp -r public/* dist/",
     "start": "NODE_ENV=production bun src/index.ts"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-rc.0",
     "@vercel/analytics": "^1.6.1",
+    "bun-plugin-tailwind": "^0.1.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.564.0",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "tailwind-merge": "^3.4.1",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.4.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
